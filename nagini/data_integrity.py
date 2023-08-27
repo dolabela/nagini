@@ -1,6 +1,6 @@
+"functions that calculate metrics to check data integrity"
+
 import pandas as pd 
-
-
 
 def calculate_duplication(df):
 	duplicated_rows = df[df.duplicated(keep='first')]
