@@ -19,3 +19,9 @@ def recall_score(y_true, y_pred):
     true_pos_true_count = sum(np.where(y_true == 1, y_true * y_pred, 0))
     score = true_pos_true_count / pos_true_count
     return score
+
+def f1_score(y_true, y_pred):
+    recall = recall_score(y_true, y_pred)
+    precision = precision_score(y_true, y_pred)
+    f1 = 2 * (recall * precision) / (recall + precision)
+    return f1
