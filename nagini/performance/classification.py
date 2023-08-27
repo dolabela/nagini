@@ -11,7 +11,7 @@ def accuracy_score(y_true, y_pred):
         y_pred (np.array): Array of predicted target values. 1=True and 0=False
 
     Returns:
-        float: _description_
+        float: Aggregated accuracy score
     """
     score_array = y_true == y_pred
     sum_score = sum(score_array)
@@ -28,7 +28,7 @@ def precision_score(y_true, y_pred):
         y_pred (np.array): Array of predicted target values. 1=True and 0=False
 
     Returns:
-        float: _description_
+        float: Aggregated precision score
     """
     pos_pred_count = sum(y_pred)
     true_pos_pred_count = sum(np.where(y_pred == 1, y_true * y_pred, 0))
@@ -60,7 +60,7 @@ def f1_score(y_true, y_pred):
         y_pred (np.array): Array of predicted target values. 1=True and 0=False
 
     Returns:
-        float: _description_
+        float: Aggregated f1 score
     """
     recall = recall_score(y_true, y_pred)
     precision = precision_score(y_true, y_pred)
