@@ -2,6 +2,29 @@
 
 import numpy as np
 
+def calculate_tp(y_true, y_pred, positive_value = 1):
+    tp = (y_true == y_pred) & \
+         (y_true == positive_value) & \
+         (y_pred == positive_value) 
+    return sum(tp)
+
+def calculate_tn(y_true, y_pred, positive_value = 1):
+    tn = (y_true == y_pred) & \
+         (y_true != positive_value) & \
+         (y_pred != positive_value) 
+    return sum(tn)
+
+def calculate_fp(y_true, y_pred, positive_value = 1):
+    fp = (y_true != y_pred) & \
+         (y_true != positive_value) & \
+         (y_pred == positive_value) 
+    return sum(fp)
+
+def calculate_fn(y_true, y_pred, positive_value = 1):
+    fn = (y_true != y_pred) & \
+         (y_true != positive_value) & \
+         (y_pred == positive_value) 
+    return sum(fn)
 
 def accuracy_score(y_true, y_pred):
     """ Compute Accuracy score classification metric
