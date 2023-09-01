@@ -23,3 +23,4 @@ def test_recall_score(actual_metrics):
 def test_f1_score(actual_metrics):
     assert round(actual_metrics.f1_score,2)== 0.73
     
+ 
