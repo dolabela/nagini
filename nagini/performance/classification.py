@@ -2,90 +2,80 @@
 
 import numpy as np
 
-def calculate_tp(y_true, y_pred, positive_value = 1):
-    tp = (y_true == y_pred) & \
-         (y_true == positive_value) & \
-         (y_pred == positive_value) 
-    return sum(tp)
-
-def calculate_tn(y_true, y_pred, positive_value = 1):
-    tn = (y_true == y_pred) & \
-         (y_true != positive_value) & \
-         (y_pred != positive_value) 
-    return sum(tn)
-
-def calculate_fp(y_true, y_pred, positive_value = 1):
-    fp = (y_true != y_pred) & \
-         (y_true != positive_value) & \
-         (y_pred == positive_value) 
-    return sum(fp)
-
-def calculate_fn(y_true, y_pred, positive_value = 1):
-    fn = (y_true != y_pred) & \
-         (y_true != positive_value) & \
-         (y_pred == positive_value) 
-    return sum(fn)
-
-def accuracy_score(y_true, y_pred):
-    """ Compute Accuracy score classification metric
-
-    Args:
-        y_true (np.array): Array of correct target values. 1=True and 0=False
-        y_pred (np.array): Array of predicted target values. 1=True and 0=False
-
-    Returns:
-        float: Aggregated accuracy score
-    """
-    score_array = y_true == y_pred
-    sum_score = sum(score_array)
-    count_score = len(score_array)
-    score = sum_score / count_score
-    return score
 
 
-def precision_score(y_true, y_pred):
-    """ Compute precision score classification metric
+class ClassificationMetrics():
+    def __init__(self, y_pred, y_true, positive_value = 1):
+        self.y_pred = y_pred
+        self.y_true = y_true
+        self._positive_value = positive_value
+        self._get_metrics()
 
-    Args:
-        y_true (np.array): Array of correct target values. 1=True and 0=False
-        y_pred (np.array): Array of predicted target values. 1=True and 0=False
+    def _get_metrics(self):
+        self._calculate_tp()
+        self._calculate_tn()
+        self._calculate_fp()
+        self._calculate_fn()
+        self._accuracy_score()
+        self._recall_score()
+        self._precision_score()
+        self._f1_score()
 
-    Returns:
-        float: Aggregated precision score
-    """
-    pos_pred_count = sum(y_pred)
-    true_pos_pred_count = sum(np.where(y_pred == 1, y_true * y_pred, 0))
-    score = true_pos_pred_count / pos_pred_count
-    return score
+    def print_metrics(self):
+        print(f"""
+            Accuracy: {self.accuracy_score}
+            Precision: {self.precision_score}
+            Recall: {self.recall_score}
+            F1: {self.f1_score}
+        """)
 
+    def _calculate_tp(self):
+        tp = (self.y_true == self.y_pred) & \
+            (self.y_true == self._positive_value) & \
+            (self.y_pred == self._positive_value) 
+        self.tp = sum(tp)
 
-def recall_score(y_true, y_pred):
-    """ Compute recall score classification metric
+    def _calculate_tn(self):
+        tn = (self.y_true == self.y_pred) & \
+            (self.y_true != self._positive_value) & \
+            (self.y_pred != self._positive_value) 
+        self.tn = sum(tn)
 
-    Args:
-        y_true (np.array): Array of correct target values. 1=True and 0=False
-        y_pred (np.array): Array of predicted target values. 1=True and 0=False
+    def _calculate_fp(self):
+        fp = (self.y_true != self.y_pred) & \
+            (self.y_true != self._positive_value) & \
+            (self.y_pred == self._positive_value) 
+        self.fp = sum(fp)
 
-    Returns:
-        float: Aggregated recall score
-    """
-    pos_true_count = sum(y_true)
-    true_pos_true_count = sum(np.where(y_true == 1, y_true * y_pred, 0))
-    score = true_pos_true_count / pos_true_count
-    return score
+    def _calculate_fn(self):
+        fn = (self.y_true != self.y_pred) & \
+            (self.y_true == self._positive_value) & \
+            (self.y_pred != self._positive_value) 
+        self.fn = sum(fn)
 
+    def _accuracy_score(self):
+        self.accuracy_score = (self.tp + self.tn)/(self.tp + \
+                                self.tn + self.fp + self.fn )
+                              
+    def _precision_score(self):
+        self.precision_score = self.tp/(self.tp + self.fp)
 
-def f1_score(y_true, y_pred):
-    """ Compute f1 score classification metric
+    def _recall_score(self):
+        self.recall_score = self.tp/(self.tp + self.fn)
 
-    Args:
-        y_true (np.array): Array of correct target values. 1=True and 0=False
-        y_pred (np.array): Array of predicted target values. 1=True and 0=False
+    def _f1_score(self):
+        self.f1_score = 2 / (1/self.recall_score + 1/self.precision_score)
 
-    Returns:
-        float: Aggregated f1 score
-    """
-    recall = recall_score(y_true, y_pred)
-    precision = precision_score(y_true, y_pred)
-    f1 = 2 * (recall * precision) / (recall + precision)
-    return f1
+    def _calculate_false_negative_rate(self):
+        self.fnr = self.fn/(self.tp + self.fn)
+
+    def _calculate_true_negative_rate(self):
+        self.fnr = self.tn/(self.tn + self.fp)
+
+ 
+# >>> direct_recall_score(x,y)
+# 0.25
+# >>> direct_precision_score(x,y)
+# 0.5
+# >>> direct_accuracy_score(x,y)
+# 0.2
