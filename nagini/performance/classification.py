@@ -81,3 +81,13 @@ class ClassificationMetrics():
     def _calculate_true_negative_rate(self):
         self.fnr = self.tn/(self.tn + self.fp)
 
+    def _calculate_plot_ranges(self):
+        array_threshold = np.arange(0, 1, 0.10)
+        y_probs = self.y_probs[:,1]
+        for threshhold in array_threshold:
+            th_y_pred = np.where(y_probs > threshhold, 1, 0)
+            print(th_y_pred)
+            break
+            ClassificationMetrics(y_true=self.y_true, y_pred = th_y_pred )
+
+  
