@@ -5,6 +5,7 @@ import pytest
 
 y_true = np.array([0, 1, 0, 0, 1, 0, 1, 1, 1, 0])
 y_pred = np.array([0, 1, 1, 1, 1, 0, 0, 1, 1, 0])
+y_probs = 
 actual_metrics = [ClassificationMetrics(y_pred=y_pred,y_true=y_true)]
 
 @pytest.mark.parametrize("actual_metrics", actual_metrics)

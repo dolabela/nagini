@@ -5,9 +5,10 @@ import numpy as np
 
 
 class ClassificationMetrics():
-    def __init__(self, y_pred, y_true, positive_value = 1):
+    def __init__(self, y_pred, y_true, y_probs = None, positive_value = 1):
         self.y_pred = y_pred
         self.y_true = y_true
+        self.y_probs = y_probs
         self._positive_value = positive_value
         self._get_metrics()
 
@@ -20,6 +21,8 @@ class ClassificationMetrics():
         self._recall_score()
         self._precision_score()
         self._f1_score()
+        if self.y_probs:
+            self._calculate_plot_ranges()
 
     def print_metrics(self):
         print(f"""
@@ -66,16 +69,15 @@ class ClassificationMetrics():
     def _f1_score(self):
         self.f1_score = 2 / (1/self.recall_score + 1/self.precision_score)
 
+    def _calculate_true_positive_rate(self):
+        self.tpr = self.tp/(self.tp + self.fn)
+
+    def _calculate_false_positive_rate(self):
+        self.tpr = self.fp/(self.tn + self.fp)
+
     def _calculate_false_negative_rate(self):
         self.fnr = self.fn/(self.tp + self.fn)
 
     def _calculate_true_negative_rate(self):
         self.fnr = self.tn/(self.tn + self.fp)
 
- 
-# >>> direct_recall_score(x,y)
-# 0.25
-# >>> direct_precision_score(x,y)
-# 0.5
-# >>> direct_accuracy_score(x,y)
-# 0.2
