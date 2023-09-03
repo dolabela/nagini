@@ -24,7 +24,8 @@ class ClassificationMetrics():
         self._calculate_false_positive_rate()
         self._calculate_true_positive_rate()
         if self.y_probs is not None :
-            self._calculate_plot_ranges()
+            self._calculate_roc_pr_ranges()
+            self._calculate_auc()
 
     def print_metrics(self):
         print(f"""
@@ -95,14 +96,13 @@ class ClassificationMetrics():
     def _calculate_true_negative_rate(self):
         self.tnr = self.tn/(self.tn + self.fp)
 
-    def _calculate_plot_ranges(self):
+    def _calculate_roc_pr_ranges(self):
         array_threshold = np.arange(0, 1, 1/100)
         y_probs = self.y_probs[:,1]
         self.array_precision = np.zeros(shape=(100))
         self.array_recall = np.zeros(shape=(100))
         self.array_tpr = np.zeros(shape=(100))
         self.array_fpr = np.zeros(shape=(100))
-
         for idx, threshhold in enumerate(array_threshold):
             th_y_pred = np.where(y_probs > threshhold, 1, 0)
             metrics = ClassificationMetrics(y_true=self.y_true, y_pred = th_y_pred)
@@ -111,5 +111,8 @@ class ClassificationMetrics():
             self.array_tpr[idx] = metrics.tpr
             self.array_fpr[idx] = metrics.fpr
 
+    def _calculate_auc(self):
+        self.auc_pr = abs(np.trapz(self.array_precision, self.array_recall))
+        self.auc_roc = abs(np.trapz(self.array_fpr,self.array_tpr))
 
 
