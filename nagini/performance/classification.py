@@ -21,7 +21,11 @@ class ClassificationMetrics():
         self._recall_score()
         self._precision_score()
         self._f1_score()
-        if self.y_probs:
+        self._calculate_false_negative_rate()
+        self._calculate_true_negative_rate()
+        self._calculate_false_positive_rate()
+        self._calculate_true_positive_rate()
+        if self.y_probs is not None :
             self._calculate_plot_ranges()
 
     def print_metrics(self):
@@ -31,6 +35,8 @@ class ClassificationMetrics():
             Recall: {self.recall_score}
             F1: {self.f1_score}
         """)
+
+
 
     def _calculate_tp(self):
         tp = (self.y_true == self.y_pred) & \
@@ -63,8 +69,10 @@ class ClassificationMetrics():
     def _precision_score(self):
         self.precision_score = self.tp/(self.tp + self.fp)
 
-    def _recall_score(self):
-        self.recall_score = self.tp/(self.tp + self.fn)
+
+    def _recall_score(self):            
+
+        self.recall_score = self.tp/(self.tp + self.fn) 
 
     def _f1_score(self):
         self.f1_score = 2 / (1/self.recall_score + 1/self.precision_score)
@@ -73,21 +81,30 @@ class ClassificationMetrics():
         self.tpr = self.tp/(self.tp + self.fn)
 
     def _calculate_false_positive_rate(self):
-        self.tpr = self.fp/(self.tn + self.fp)
+        self.fpr = self.fp/(self.tn + self.fp)
 
     def _calculate_false_negative_rate(self):
         self.fnr = self.fn/(self.tp + self.fn)
 
     def _calculate_true_negative_rate(self):
-        self.fnr = self.tn/(self.tn + self.fp)
+        self.tnr = self.tn/(self.tn + self.fp)
 
     def _calculate_plot_ranges(self):
-        array_threshold = np.arange(0, 1, 0.10)
+        array_threshold = np.arange(0, 1, 1/100)
         y_probs = self.y_probs[:,1]
-        for threshhold in array_threshold:
-            th_y_pred = np.where(y_probs > threshhold, 1, 0)
-            print(th_y_pred)
-            break
-            ClassificationMetrics(y_true=self.y_true, y_pred = th_y_pred )
+        self.array_precision = np.zeros(shape=(100))
+        self.array_recall = np.zeros(shape=(100))
+        self.array_tpr = np.zeros(shape=(100))
+        self.array_fpr = np.zeros(shape=(100))
 
-  
+        for idx, threshhold in enumerate(array_threshold):
+            th_y_pred = np.where(y_probs > threshhold, 1, 0)
+            metrics = ClassificationMetrics(y_true=self.y_true, y_pred = th_y_pred)
+            print(th_y_pred)
+            self.array_precision[idx] = metrics.precision_score
+            self.array_recall[idx] = metrics.recall_score
+            self.array_tpr[idx] = metrics.tpr
+            self.array_fpr[idx] = metrics.fpr
+
+
+
