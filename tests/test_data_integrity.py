@@ -28,7 +28,7 @@ def test_missing_values():
 	{  "calories": 390 } ]
 	actual_df = pd.DataFrame(actual_data)
 	actual_missing_values = calculate_missing_value_in_columns(actual_df)
-	actual_missing_values_list = actual_missing_values.values.tolist()
-	expected_missing_values_list = [['calories', 5, 1, 0.2], ['duration', 5, 2, 0.4]]
+	expected_missing_values_dict = {'calories': {'count':5, 'missing': 1, 'pc_missing': 0.2}, 
+								  'duration': {'count':5, 'missing': 2, 'pc_missing': 0.4} }
 
-	assert actual_missing_values_list == expected_missing_values_list
+	assert actual_missing_values == expected_missing_values_dict
