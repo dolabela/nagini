@@ -10,21 +10,13 @@ def calculate_duplication(df):
 	return count, rows
 
 def calculate_missing_value_in_columns(df):
-	variables = []
-	count = []
-	missing = []
-	pc_missing = []
+	output = {}
 	for item in df.columns:
-		variables.append(item)
-		count.append(len(df[item]))
-		missing.append(df[item].isna().sum())
-		pc_missing.append(round((df[item].isna().sum() / len(df[item])) , 4))
-	output = pd.DataFrame({
-		'variable': variables, 
-		'count': count,
-		'missing': missing, 
-		'pc_missing': pc_missing
-	})    
+		output[item] = {
+			'count': len(df[item]),
+			'missing': df[item].isna().sum(), 
+			'pc_missing': round((df[item].isna().sum() / len(df[item])) , 4)
+			}
+ 
 	return output
 	
-
